@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddTodoForm from "./components/AddTodoForm";
 import TodoList from "./components/TodoList";
-import { dummyData } from "./data/todos";
 import TodoSummary from "./components/TodoSummary";
+import type { Todo } from "./types/todos";
 
 function App() {
-  const [todos, setTodos] = useState(dummyData);
+  // todos 데이터 localStorage에 저장
+  const [todos, setTodos] = useState(() => {
+    const savedTodos: Todo[] = JSON.parse(
+      localStorage.getItem("todos") || "[]",
+    );
+    return savedTodos;
+  });
+  // todos가 변경될 경우에만, localStorage 업데이트
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   // 할 일 완료처리
   function setTodoCompleted(id: number, completed: boolean) {
